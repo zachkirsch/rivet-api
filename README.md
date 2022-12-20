@@ -1,18 +1,15 @@
-# {Company} API
+# Rivet API
 
 Tagging a release on this repository will update the:
 
-- [Node.js SDK repo](https://github.com/fern-{company}/{company}-node)
-- [Java SDK repo](https://github.com/fern-{company}/{company}-java)
-- [OpenAPI description repo](https://github.com/fern-{company}/{company}-openapi)
-- [Postman collection repo](https://github.com/fern-{company}/{company}-postman)
+- [Node.js SDK repo](https://github.com/fern-rivet/rivet-node)
 - _More SDKs to come..._
 
 ## What is in this repository?
 
 This repository contains
 
-- {Company}'s Fern API Definition which lives in the [definition](./fern/api/definition/) folder
+- Rivet's Fern API Definition which lives in the [definition](./fern/api/definition/) folder
 - Generators (see [generators.yml](./fern/api/generators.yml))
 
 ## What is in the API Definition?
