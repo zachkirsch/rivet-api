@@ -6,8 +6,6 @@ services:
     MatchmakerService:
       auth: true
       base-path: /
-      headers:
-        origin: string
       endpoints:
         FindLobby:
           display-name: Find a Lobby
