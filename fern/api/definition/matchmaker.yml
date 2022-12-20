@@ -1,3 +1,6 @@
+imports:
+  commons: commons.yml
+
 services:
   http:
     MatchmakerService:
@@ -30,13 +33,13 @@ services:
           response:
             type: FindLobbyOutput
             docs: A matchmaker lobby.
-          errors: 
-            - BadRequestError
-            - ForbiddenError
-            - NotFoundError
-            - UnauthorizedError
-            - RateLimitError
-            - InternalError
+          errors:
+            - commons.BadRequestError
+            - commons.ForbiddenError
+            - commons.NotFoundError
+            - commons.UnauthorizedError
+            - commons.RateLimitError
+            - commons.InternalError
 
 types:
   LobbyId: uuid
