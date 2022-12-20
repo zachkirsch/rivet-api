@@ -23,6 +23,9 @@ types:
 
   RateLimitErrorResponseContent:
     extends: BaseError
+  
+  InternalErrorResponseContent: 
+    extends: BaseError 
 
 errors: 
   BadRequestError: 
@@ -49,6 +52,11 @@ errors:
     docs: An error thrown when the requestee has hit a rate limit. You are sending too many requests too quickly.
     type: RateLimitErrorResponseContent
     status-code: 429
+
+  InternalError: 
+    docs: An error caused by internal server problems.
+    type: InternalErrorResponseContent
+    status-code: 500
   
 
 
