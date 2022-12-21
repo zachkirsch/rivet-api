@@ -3,5 +3,5 @@ auth: bearer
 error-discrimination: 
   strategy: status-code
 environments:
-  Production: https://docs.rivet.gg/lobbies/find
+  Production: https://docs.rivet.gg/
 default-environment: Production
