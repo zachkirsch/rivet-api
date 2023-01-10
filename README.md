@@ -2,7 +2,8 @@
 
 Tagging a release on this repository will update the:
 
-- [Node.js SDK repo](https://github.com/fern-rivet/rivet-node)
+- [Matchmaker Node.js SDK repo](https://github.com/fern-rivet/matchmaker-node)
+- [Identity Node.js SDK repo](https://github.com/fern-rivet/identity-node)
 - _More SDKs to come..._
 
 ## What is in this repository?
