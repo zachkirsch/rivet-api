@@ -1,4 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 types:
+  JWT:
+    type: string 
+    docs: Documentation at https://jwt.io/
+  
+  Timestamp: datetime 
+  
   WatchResponse:
     properties:
       index: string
@@ -67,3 +75,5 @@ errors:
     docs: An error caused by internal server problems.
     type: InternalErrorResponseContent
     status-code: 500
+  
+
