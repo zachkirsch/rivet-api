@@ -5,7 +5,7 @@ groups:
         version: 0.0.250
         output:
           location: npm
-          package-name: '@fern-api/rivet'
+          package-name: '@fern-api/rivet-matchmaker'
           token: ${FERN_NPM_TOKEN}
         github:
-          repository: fern-rivet/rivet-node
+          repository: fern-rivet/matchmaker-node
