@@ -1,0 +1,11 @@
+groups:
+  external:
+    generators:
+      - name: fernapi/fern-typescript-sdk
+        version: 0.0.250
+        output:
+          location: npm
+          package-name: '@fern-api/rivet-identity'
+          token: ${FERN_NPM_TOKEN}
+        github:
+          repository: fern-rivet/identity-node

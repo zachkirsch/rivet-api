@@ -3,14 +3,15 @@ imports:
 
 services:
   http:
-    MatchmakerService:
+    LobbiesService:
       auth: true
-      base-path: /
+      base-path: /lobbies
       endpoints:
-        FindLobby:
+        findLobby:
           display-name: Find a Lobby
-          docs: Finds a lobby based on the given criteria. If a lobby is not found and `prevent_auto_create_lobby` is `true`, a new lobby will be created.
-          path: /lobbies/find
+          docs: Finds a lobby based on the given criteria. If a lobby is not found and
+            `prevent_auto_create_lobby` is `true`, a new lobby will be created.
+          path: /find
           method: POST
           request:
             name: FindLobbyInput
@@ -21,10 +22,14 @@ services:
                   docs: Game modes to match lobbies against.
                 regions:
                   type: optional<list<string>>
-                  docs: Regions to match lobbies against. If not specified, the optimal region will be determined and will attempt to find lobbies in that region.
+                  docs: Regions to match lobbies against. If not specified, the optimal region
+                    will be determined and will attempt to find lobbies in that
+                    region.
                 prevent_auto_create_lobby:
                   type: optional<boolean>
-                  docs: Prevents a new lobby from being created when finding a lobby. If no lobby is found, a `MATCHMAKER_LOBBY_NOT_FOUND` error will be thrown.
+                  docs: Prevents a new lobby from being created when finding a lobby. If no lobby
+                    is found, a `MATCHMAKER_LOBBY_NOT_FOUND` error will be
+                    thrown.
                 captcha:
                   type: optional<CaptchaConfig>
                   docs: Methods to verify a captcha.
@@ -77,7 +82,8 @@ types:
   MatchmakerLobbyJoinInfoPorts: map<string, MatchmakerLobbyJoinInfoPort>
 
   MatchmakerLobbyJoinInfoPort:
-    docs: A matchmaker lobby port. Configured by `rivet.cloud#LobbyGroupRuntimeDockerPort$label`.
+    docs: A matchmaker lobby port. Configured by
+      `rivet.cloud#LobbyGroupRuntimeDockerPort$label`.
     properties:
       host:
         type: optional<string>
@@ -93,7 +99,8 @@ types:
         docs: The port range for this lobby.
       is_tls:
         type: boolean
-        docs: Wether or not this lobby port uses TLS. You cannot mix a non-TLS and TLS ports.
+        docs: Wether or not this lobby port uses TLS. You cannot mix a non-TLS and TLS
+          ports.
 
   MatchmakerLobbyJoinInfoPortRange:
     docs: Inclusive range of ports that can be connected to.
@@ -118,4 +125,6 @@ types:
     properties:
       token:
         type: string
-        docs: Pass this token through the socket to the lobby server. The lobby server will validate this token with `rivet.api.matchmaker#PlayerConnected$player_token`.
+        docs: Pass this token through the socket to the lobby server. The lobby server
+          will validate this token with
+          `rivet.api.matchmaker#PlayerConnected$player_token`.
