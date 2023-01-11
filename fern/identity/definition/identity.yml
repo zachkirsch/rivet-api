@@ -4,6 +4,7 @@ imports:
   commons: commons.yml
   game: game.yml
   party: party.yml
+  upload: upload.yml
   identity-c: identity-commons.yml
 
 services:
@@ -131,7 +132,60 @@ services:
               properties:
                 game_activity: identity-c.UpdateIdentityGameActivity
 
+        removeIdentityGameActivity:
+          docs: Removes the current identity's game activity.
+          method: DELETE 
+          path: /self/activity
+        
+        updateIdentityStatus:
+          docs: Updates the current identity's status.
+          method: POST
+          path: /self/status
+          request: 
+            name: UpdateIdentityStatusInput
+            body: 
+              properties:
+                status: identity-c.IdentityStatus
+
+        followIdentity: 
+          docs: Follows the given identity.
+            In order for identities to be "friends", the other identity has to also follow this identity. 
+          method: POST 
+          path: /{identity_id}/follow
+          path-parameters:
+            identity_id: uuid
+        
+        unfollowIdentity:
+          docs: Unfollows the given identity.
+          method: DELETE 
+          path: /{identity_id}/follow
+          path-parameters:
+            identity_id: uuid
+        
+        prepareIdentityAvatarUpload:
+          docs: Prepares an avatar image upload.
+            Complete upload with `rivet.api.identity#CompleteIdentityAvatarUpload`.
+          method: POST 
+          path: /avatar-upload/prepare
+          request: PrepareIdentityAvatarUploadInput
+          response: PrepareIdentityAvatarUploadOutput
+     
+
 types:
+  PrepareIdentityAvatarUploadOutput:
+    properties:
+      upload_id: uuid 
+      presigned_request: upload.UploadPresignedRequest
+
+  PrepareIdentityAvatarUploadInput: 
+    docs: The path/filename of the identity avatar.
+    properties:
+      path: string 
+      mime: 
+        type: optional<string>
+        docs: The MIME type of the identity avatar. https://www.iana.org/assignments/media-types/media-types.xhtml
+      content_length: long      
+
   SearchIdentitiesOutput: 
     properties:
       identities: list<identity-c.IdentityHandle>
