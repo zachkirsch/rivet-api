@@ -67,3 +67,4 @@ types:
     docs: A party member state denoting that the member is in a lobby.
     properties:
       player_id: uuid
+  

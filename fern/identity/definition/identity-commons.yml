@@ -6,6 +6,17 @@ imports:
   party-c: party-commons.yml
 
 types:
+  IdentityHandle: 
+    properties:
+      identity_id: uuid 
+      display_name: commons.DisplayName
+      account_number: commons.AccountNumber
+      avatar_url: string 
+      presence: optional<IdentityPresence>
+      party: party-c.PartyHandle
+      is_registered: boolean 
+      external: IdentityExternalLinks
+
   IdentityPresence: 
     docs: Information about the identity's current status, party, and active game.
     properties:
@@ -51,21 +62,6 @@ types:
       mutual_metadata: 
         type: unknown 
         docs: JSON data seen only by the given identity and their mutual followers.
-
-  IdentityHandle: 
-    properties:
-      identity_id: uuid 
-      display_name: commons.DisplayName
-      account_number: commons.AccountNumber
-      avatar_url:
-        type: string 
-        docs: The URL of this identity's avatar image.
-      presence: IdentityPresence 
-      party: party-c.PartyHandle 
-      is_registered:
-        type: boolean 
-        docs: Whether or not this identity is registered with a linked account.
-      external: IdentityExternalLinks 
 
   IdentityExternalLinks: 
     docs: External links for an identity.
