@@ -45,11 +45,50 @@ services:
             - commons.RateLimitError
             - commons.InternalError
 
+        getIdentitySelfProfile: 
+          method: GET 
+          path: /self/profile 
+          request: 
+            name: GetIdentitySelfProfileInput
+            query-parameters:
+              watch_index: commons.WatchQuery
+          response: GetIdentitySelfProfileOutput
+
 types:
+  GetIdentitySelfProfileOutput: 
+    properties:
+      identity: IdentityProfile
+      watch: commons.WatchResponse       
+  
   GetIdentityProfileOutput:
     properties:
       identity: IdentityProfile
       watch: commons.WatchResponse
+
+  IdentitySummary: 
+    properties:
+      identity_id: uuid
+      display_name: commons.DisplayName
+      account_number: commons.AccountNumber
+      avatar_url: string
+      presence: 
+        type: optional<identity-c.IdentityPresence>
+        docs: Information about the identity's current status, party, and active game.
+      party: optional<party.PartySummary>
+      is_registered: 
+        type: boolean
+        docs: Whether or not this identity is registered with a linked account.
+      external: identity-c.IdentityExternalLinks
+      following:
+        type: boolean
+        docs: Whether or not the requestee's identity is following this identity.
+      is_following_me:
+        type: boolean
+        docs: Whether or not this identity following the requestee's identity.
+      is_mutual_following: 
+        type: boolean
+        docs: Whether or not this identity is both followng and is followed by the
+          requestee's identity.
 
   IdentityProfile:
     properties:
@@ -90,7 +129,15 @@ types:
       groups: list<IdentityGroup>
       games: list<game.GameStatSummary>    
 
-  IdentityDevState: string
+  IdentityDevState:
+    docs: The state of the given identity's developer status.
+    enum: 
+      - value: inactive  
+        name: INACTIVE 
+      - value: pending  
+        name: PENDING 
+      - value: accepted
+        name: ACCEPTED
 
   Bio:
     type: string
@@ -161,3 +208,13 @@ types:
         type: IdentityProfile
         docs: The UUID of the game this identity belongs to.
       game_id: uuid
+
+  GameLinkStatus: 
+    docs: The link status between an identity and a game user.
+    enum: 
+      - value: incomplete
+        name: INCOMPLETE
+      - value: complete
+        name: COMPLETE
+      - value: cancelled
+        name: CANCELLED
