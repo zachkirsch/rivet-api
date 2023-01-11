@@ -4,6 +4,7 @@ imports:
   commons: commons.yml
   game: game.yml
   party: party.yml
+  identity-c: identity-commons.yml
 
 services:
   http:
@@ -57,13 +58,13 @@ types:
       account_number: commons.AccountNumber
       avatar_url: string
       presence: 
-        type: optional<IdentityPresence>
+        type: optional<identity-c.IdentityPresence>
         docs: Information about the identity's current status, party, and active game.
       party: optional<party.PartySummary>
       is_registered: 
         type: boolean
         docs: Whether or not this identity is registered with a linked account.
-      external: IdentityExternalLinks
+      external: identity-c.IdentityExternalLinks
       is_admin: 
         type: boolean
         docs: Whether or not this identity is an admin.
@@ -87,51 +88,7 @@ types:
       bio: Bio
       linked_accounts: list<IdentityLinkedAccount>
       groups: list<IdentityGroup>
-      games: list<game.GameStatSummary>
-
-  IdentityPresence:
-    properties:
-      update_ts: datetime
-      status: IdentityStatus
-      game_activity: optional<IdentityGameActivity>
-
-  IdentityStatus:
-    enum:
-      - name: ONLINE
-        value: online
-      - name: AWAY
-        value: away
-      - name: offline
-        value: offline
-
-  IdentityGameActivity:
-    docs: The game an identity is currently participating in.
-    properties:
-      game: game.GameHandle
-      message: 
-        type: string
-        docs: A short activity message about the current game activity.
-      public_metadata: 
-        type: unknown
-        docs: JSON data seen by anyone.
-      mutual_metadata: 
-        type: unknown
-        docs: JSON data seen only by the given identity and their mutual followers.
-
-
-  IdentityExternalLinks: 
-    docs: External links for an identity.
-    properties:
-      profile:
-        type: string 
-        docs: A link to this identity's profile page.
-      settings: 
-        type: optional<string>
-        docs: A link to the Rivet settings page.
-      chat: 
-        type: optional<string>
-        docs: A link to a chat page with the given identity.
-      
+      games: list<game.GameStatSummary>    
 
   IdentityDevState: string
 

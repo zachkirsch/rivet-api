@@ -2,28 +2,13 @@
 
 imports:
   commons: commons.yml
+  game-c: game-commons.yml
 
 types:
-  GameId: uuid
-  RecordId: uuid 
-  IconId: uuid 
-
-  GameHandle:
-    properties:
-      game_id: GameId
-      name_id: commons.Identifier
-      display_name: commons.DisplayName
-      logo_url:
-        type: optional<string>
-        docs: The URL of this game's logo image.
-      banner_url:
-        type: optional<string>
-        docs: The URL of this game's banner image.
-
   GameStatSummary:
     docs: A game statistic summary.
     properties:
-      game: GameHandle
+      game: game-c.GameHandle
       stats: GameStats
   
   GameStats: list<GameStat>
@@ -38,11 +23,11 @@ types:
   GameStatConfig:
     docs: A game statistic config. 
     properties:
-      record_id: RecordId 
-      icon_id: IconId 
+      record_id: uuid  
+      icon_id: uuid 
       format: GameStatFormatMethod
       aggregation: GameStatAggregationMethod 
   
   GameStatFormatMethod: string 
-  
+
   GameStatAggregationMethod: string

@@ -2,48 +2,22 @@
 
 imports:
   commons: commons.yml
+  game: game.yml
+  identity-c: identity-commons.yml
+  game-c: game-commons.yml
+  party-c: party-commons.yml
 
 types:
   PartySummary:
     properties:
       party_id: uuid
       create_ts: datetime
-      activity: PartyActivity
-      external: PartyExternalLinks
+      activity: party-c.PartyActivity
+      external: party-c.PartyExternalLinks
       publicity: PartyPublicity
       party_size: integer
       members: PartyMemberSummaries
       thread_id: uuid
-
-  PartyExternalLinks:
-    docs: External links for a party.
-    properties:
-      chat:
-        type: string
-        docs: A link to the given party's chat thread.
-
-  PartyActivity:
-    docs: A union representing the activity of a given party.
-    union:
-      idle: {} # docs: A party activity denoting that the party is idle.
-      matchmaker_finding_lobby: PartyActivityMatchmakerFindingLobby
-      matchmaker_lobby: PartyActivityMatchmakerLobby
-
-  PartyActivityMatchmakerFindingLobby:
-    docs: A party activity denoting that the party is currently searching for a lobby.
-    properties:
-      game: GameHandle
-
-  PartyActivityMatchmakerLobby:
-    docs: A party activity denoting that the party is currently in a lobby.
-    properties:
-      lobby: PartyMatchmakerLobby
-      game: GameHandle
-
-  PartyMatchmakerLobby:
-    docs: A party lobby.
-    properties:
-      lobby_id: uuid
 
   PartyPublicity:
     properties:
@@ -66,33 +40,23 @@ types:
 
   PartyMemberSummary:
     properties:
-      identity: IdentityHandle
+      identity: identity-c.IdentityHandle
       is_leader:
         type: boolean
         docs: Whether or not this party member is the leader of the given party.
       join_ts: datetime
       state: PartyMemberState
-
-  IdentityHandle:
+  
+  PartyMemberState: 
+    union:
+      idle: {} # A party member state denoting that the member is idle. 
+      matchmaker_pending: {} # A party member state denoting that the member is currently waiting to start matchmaking. 
+      matchmaker_finding_lobby: {} # A party member state denoting that the member is currently searching for a lobby.
+      matchmaker_lobby: PartyMemberStateMatchmakerLobby
+      
+  PartyMemberStateMatchmakerLobby: 
+    docs: A party member state denoting that the member is in a lobby.
     properties:
-      identity_id: uuid
-      display_name: commons.DisplayName
-      account_number: commons.AccountNumber
-      avatar_url:
-        type: string
-        docs: The URL of this identity's avatar image.
-      presence: optional<IdentityPresence>
-      party: PartyHandle
-      is_registered:
-        type: boolean
-        docs: Whether or not this identity is registered with a linked account.
-      external:
-        type: IdentityExternalLinks
-        docs: External links for an identity.
+      player_id: uuid
 
-  PartyHandle:
-    properties:
-      party_id: uuid
-      create_ts: datetime
-      activity: PartyActivity
-      external: PartyExternalLinks
+      

@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+types:
+  GameHandle:
+    properties:
+      game_id: uuid 
+      name_id: commons.Identifier
+      display_name: commons.DisplayName
+      logo_url:
+        type: optional<string>
+        docs: The URL of this game's logo image.
+      banner_url:
+        type: optional<string>
+        docs: The URL of this game's banner image.

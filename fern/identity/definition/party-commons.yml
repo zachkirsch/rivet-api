@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+  game-c: game-commons.yml
+
+types: 
+  PartyHandle:
+    properties:
+      party_id: uuid
+      create_ts: datetime
+      activity: PartyActivity
+      external: PartyExternalLinks
+
+  PartyActivity:
+    docs: A union representing the activity of a given party.
+    union:
+      idle: {} # docs: A party activity denoting that the party is idle.
+      matchmaker_finding_lobby: PartyActivityMatchmakerFindingLobby
+      matchmaker_lobby: PartyActivityMatchmakerLobby
+
+  PartyActivityMatchmakerFindingLobby:
+    docs: A party activity denoting that the party is currently searching for a lobby.
+    properties:
+      game: game-c.GameHandle
+
+  PartyActivityMatchmakerLobby:
+    docs: A party activity denoting that the party is currently in a lobby.
+    properties:
+      lobby: PartyMatchmakerLobby
+      game: game-c.GameHandle
+  
+  PartyExternalLinks:
+    docs: External links for a party.
+    properties:
+      chat:
+        type: string
+        docs: A link to the given party's chat thread.
+  
+  PartyMatchmakerLobby:
+    docs: A party lobby.
+    properties:
+      lobby_id: uuid
