@@ -103,7 +103,41 @@ services:
                 bio: commons.Bio
           response: ValidateIdentityProfileOutput
 
+        searchIdentities:
+          docs: Fuzzy search for identities.
+          method: GET  
+          path: /search 
+          request: 
+            # docs: The query to match identity display names and account numbers against.
+            name: SearchIdentitiesInput
+            query-parameters:
+              query: string 
+              anchor: 
+                type: optional<string>
+                docs: How many identities to offset the search by.
+              limit: 
+                type: optional<integer>
+                docs: Amount of identities to return. 
+          response: SearchIdentitiesOutput
+
+        setIdentityGameActivity: 
+          docs: Sets the current identity's game activity.
+            This activity will automatically be removed when the identity goes offline.
+          method: POST 
+          path: /self/activity
+          request: 
+            name: SetIdentityGameActivityInput
+            body: 
+              properties:
+                game_activity: identity-c.UpdateIdentityGameActivity
+
 types:
+  SearchIdentitiesOutput: 
+    properties:
+      identities: list<identity-c.IdentityHandle>
+      anchor: 
+        type: optional<string>
+        docs: The pagination anchor.
   ValidateIdentityProfileOutput: 
     properties:
       errors: commons.ValidationErrors
@@ -188,7 +222,7 @@ types:
       bio: commons.Bio
       linked_accounts: list<IdentityLinkedAccount>
       groups: list<IdentityGroup>
-      games: list<game.GameStatSummary>    
+      games: list<game.GameStatSummary>
 
   IdentityDevState:
     docs: The state of the given identity's developer status.

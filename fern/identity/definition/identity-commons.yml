@@ -67,3 +67,18 @@ types:
       mutual_metadata: 
         type: unknown
         docs: JSON data seen only by the given identity and their mutual followers.  
+
+  UpdateIdentityGameActivity: 
+    docs: Information about the identity's current game. This is information that all
+      other identities can see about what the current identity is doing.
+    properties:
+      message: 
+        type: optional<string>
+        docs: A short message about the current game activity.
+      public_metadata: 
+        type: unknown
+        docs: JSON data seen by anyone.
+      mutual_metadata: 
+        type: unknown 
+        docs: JSON data seen only by the given identity and their mutual followers.
+      
