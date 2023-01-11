@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+types:
+  GameId: uuid
+  RecordId: uuid 
+  IconId: uuid 
+
+  GameHandle:
+    properties:
+      game_id: GameId
+      name_id: commons.Identifier
+      display_name: commons.DisplayName
+      logo_url:
+        type: optional<string>
+        docs: The URL of this game's logo image.
+      banner_url:
+        type: optional<string>
+        docs: The URL of this game's banner image.
+
+  GameStatSummary:
+    docs: A game statistic summary.
+    properties:
+      game: GameHandle
+      stats: GameStats
+  
+  GameStats: list<GameStat>
+
+  GameStat: 
+    properties:
+      config: GameStatConfig
+      overall_value: 
+        type: double
+        docs: A single overall value of the given statistic.
+    
+  GameStatConfig:
+    docs: A game statistic config. 
+    properties:
+      record_id: RecordId 
+      icon_id: IconId 
+      format: GameStatFormatMethod
+      aggregation: GameStatAggregationMethod 
+  
+  GameStatFormatMethod: string 
+  
+  GameStatAggregationMethod: string

@@ -2,6 +2,8 @@
 
 imports:
   commons: commons.yml
+  game: game.yml
+  party: party.yml
 
 services:
   http:
@@ -12,190 +14,173 @@ services:
         setupIdentity:
           path: /
           method: POST
-          request: 
+          request:
             name: SetupIdentityInput
             body:
               properties:
-                existing_identity_token: 
+                existing_identity_token:
                   type: commons.JWT
-                  docs: | 
+                  docs: |
                     Token returned from previous call to
                     rivet.api.identity#SetupIdentity`. If this token is invalid, a new
                     identity will be returned.
           response: SetupIdentityOutput
 
-        # getIdentityProfile:
-        #   path: /{identity_id}/profile
-        #   path-parameters:
-        #     identity_id: IdentityId
-        #   request:
-        #     name: GetIdentityProfileRequest
-        #     query-parameters:
-        #       watch_index: optional<string>
-        #   response: GetIdentityProfileOutput
-        #   errors:
-        #     - commons.BadRequestError
-        #     - commons.ForbiddenError
-        #     - commons.NotFoundError
-        #     - commons.UnauthorizedError
-        #     - commons.RateLimitError
-        #     - commons.InternalError
+        getIdentityProfile:
+          method: GET
+          path: /{identity_id}/profile
+          path-parameters:
+            identity_id: uuid 
+          request:
+            name: GetIdentityProfileInput
+            query-parameters:
+              watch_index: optional<commons.WatchQuery>
+          response: GetIdentityProfileOutput
+          errors:
+            - commons.BadRequestError
+            - commons.ForbiddenError
+            - commons.NotFoundError
+            - commons.UnauthorizedError
+            - commons.RateLimitError
+            - commons.InternalError
 
 types:
-  # IdentityId: uuid
+  GetIdentityProfileOutput:
+    properties:
+      identity: IdentityProfile
+      watch: commons.WatchResponse
 
-  # Identifier: string
+  IdentityProfile:
+    properties:
+      identity_id: uuid
+      display_name: commons.DisplayName
+      account_number: commons.AccountNumber
+      avatar_url: string
+      presence: 
+        type: optional<IdentityPresence>
+        docs: Information about the identity's current status, party, and active game.
+      party: optional<party.PartySummary>
+      is_registered: 
+        type: boolean
+        docs: Whether or not this identity is registered with a linked account.
+      external: IdentityExternalLinks
+      is_admin: 
+        type: boolean
+        docs: Whether or not this identity is an admin.
+      is_game_linked: 
+        type: optional<boolean>
+        docs: Whether or not this game user has been linked through the Rivet dashboard.
+      dev_state: optional<IdentityDevState>
+      follower_count: integer
+      following_count: integer
+      following:
+        type: boolean
+        docs: Whether or not the requestee's identity is following this identity.
+      is_following_me:
+        type: boolean
+        docs: Whether or not this identity following the requestee's identity.
+      is_mutual_following: 
+        type: boolean
+        docs: Whether or not this identity is both followng and is followed by the
+          requestee's identity.
+      join_ts: datetime
+      bio: Bio
+      linked_accounts: list<IdentityLinkedAccount>
+      groups: list<IdentityGroup>
+      games: list<game.GameStatSummary>
 
-  # DisplayName: string
+  IdentityPresence:
+    properties:
+      update_ts: datetime
+      status: IdentityStatus
+      game_activity: optional<IdentityGameActivity>
 
-  # GetIdentityProfileOutput:
-  #   properties:
-  #     identity: IdentityProfile
-  #     watch: commons.WatchResponse
+  IdentityStatus:
+    enum:
+      - name: ONLINE
+        value: online
+      - name: AWAY
+        value: away
+      - name: offline
+        value: offline
 
-  # IdentityProfile:
-  #   properties:
-  #     identity_id: IdentityId
-  #     display_name: DisplayName
-  #     account_number: commons.AccountNumber
-  #     avatar_url: string
-  #     presence: optional<IdentityPresence>
-  #     # skipping converting over party objects for now
-  #     # party: PartySummary
-  #     is_registered: boolean
-  #     external: IdentityExternalLinks
-  #     is_admin: boolean
-  #     is_game_linked: boolean
-  #     dev_state: IdentityDevState
-  #     follower_count: integer
-  #     following_count:
-  #       type: integer
-  #       docs: Whether or not the requestee's identity is following this identity.
-  #     following:
-  #       type: boolean
-  #       docs: Whether or not this identity following the requestee's identity.
-  #     is_following_me:
-  #       type: boolean
-  #       docs: Whether or not this identity is both followng and is followed by the
-  #         requestee's identity.
-  #     is_mutual_following: boolean
-  #     join_ts: datetime
-  #     bio: Bio
-  #     linked_accounts: list<IdentityLinkedAccount>
-  #     groups: list<IdentityGroup>
-  #     games: list<GameStatSummary>
+  IdentityGameActivity:
+    docs: The game an identity is currently participating in.
+    properties:
+      game: game.GameHandle
+      message: 
+        type: string
+        docs: A short activity message about the current game activity.
+      public_metadata: 
+        type: unknown
+        docs: JSON data seen by anyone.
+      mutual_metadata: 
+        type: unknown
+        docs: JSON data seen only by the given identity and their mutual followers.
 
-  # IdentityPresence:
-  #   properties:
-  #     update_ts: datetime
-  #     status: IdentityStatus
-  #     game_ y: IdentityGameActivity
 
-  # IdentityStatus:
-  #   enum:
-  #     - name: ONLINE
-  #       value: online
-  #     - name: AWAY
-  #       value: away
-  #     - name: offline
-  #       value: offline
+  IdentityExternalLinks: 
+    docs: External links for an identity.
+    properties:
+      profile:
+        type: string 
+        docs: A link to this identity's profile page.
+      settings: 
+        type: optional<string>
+        docs: A link to the Rivet settings page.
+      chat: 
+        type: optional<string>
+        docs: A link to a chat page with the given identity.
+      
 
-  # IdentityGameActivity:
-  #   properties:
-  #     game: GameHandle
-  #     message: string
-  #     public_metadata: unknown
-  #     mutual_metadata: unknown
+  IdentityDevState: string
 
-  # GameHandle:
-  #   properties:
-  #     game_id: uuid
-  #     name_id: Identifier
-  #     display_name: DisplayName
-  #     log_url: optional<string>
-  #     banner_url: optional<string>
+  Bio:
+    type: string
+    docs: Follows regex ^(?:[^\n\r]+\n?|\n){1,5}$
 
-  # PartyHandle:
-  #   properties:
-  #     party_id: uuid
-  #     create_ts: datetime
-  #     activity: PartyActivity
-  #     external: PartyExternalLinks
+  IdentityLinkedAccount:
+    docs: A union representing an identity's linked accounts.
+    union:
+      email: IdentityEmailLinkedAccount
 
-  # PartyExternalLinks:
-  #   properties:
-  #     chat: string
+  IdentityEmailLinkedAccount:
+    docs: An identity's linked email.
+    properties:
+      email: Email
 
-  # PartyActivity:
-  #   union:
-  #     idle: {}
-  #     matchmaker_finding_lobby: PartyActivityMatchmakerFindingLobby
-  #     matchmaker_lobby: PartyActivityMatchmakerLobby
+  Email: string
 
-  # PartyActivityMatchmakerFindingLobby:
-  #   properties:
-  #     game: GameHandle
+  IdentityGroup:
+    docs: A group that the given identity.
+    properties:
+      group: GroupHandle
 
-  # PartyActivityMatchmakerLobby:
-  #   properties:
-  #     lobby: PartyMatchmakerLobby
-  #     game: GameHandle
+  GroupHandle:
+    docs: A group handle.
+    properties:
+      group_id: uuid
+      display_name: commons.DisplayName
+      avatar_url:
+        docs: The URL of this group's avatar image
+        type: string
+      external: GroupExternalLinks
+      is_developer:
+        docs: Whether or not this group is a developer group.
+        type: optional<boolean>
 
-  # PartyMatchmakerLobby:
-  #   properties:
-  #     lobby_id: uuid
+  GroupExternalLinks:
+    docs: External links for this group.
+    properties:
+      profile: 
+        type: string
+        docs: A link to this group's profile page.
+      chat: 
+        type: string
+        docs: A link to this group's chat page.
 
-  # IdentityExternalLinks:
-  #   properties:
-  #     profile: string
-  #     settings: optional<string>
-  #     chat: optional<string>
-
-  # IdentityDevState: string
-
-  # Bio:
-  #   type: string
-  #   docs: Follows regex ^(?:[^\n\r]+\n?|\n){1,5}$
-
-  # IdentityLinkedAccount:
-  #   union:
-  #     email: IdentityEmailLinkedAccount
-
-  # IdentityEmailLinkedAccount:
-  #   properties:
-  #     email: Email
-
-  # Email: string
-
-  # IdentityGroup:
-  #   properties:
-  #     group: GroupHandle
-
-  # GroupHandle:
-  #   properties:
-  #     group_id: uuid
-  #     display_name: DisplayName
-  #     avatar_url:
-  #       docs: The URL of this group's avatar image
-  #       type: string
-  #     external: GroupExternalLinks
-  #     is_developer:
-  #       docs: Whether or not this group is a developer group.
-  #       type: optional<boolean>
-
-  # GroupExternalLinks:
-  #   properties:
-  #     profile: string
-  #     chat: string
-
-  # GameStatSummary:
-  #   properties:
-  #     game: GameHandle
-  #     # skipping stats for now
-  #     # stats: GameStats
-
-  SetupIdentityOutput: 
-    docs: | 
+  SetupIdentityOutput:
+    docs: |
       Token used to authenticate the identity.
       Should be stored somewhere permanent.
       Pass this to `rivet.api.identity#SetupIdentity$existing_identity_token`
@@ -207,16 +192,15 @@ types:
       (see `rivet.api.identity#PrepareGameLink`).
 
       This token should be stored locally and never sent to a server or another device.
-      If this token is comprimised, anyone with access to this token has control of the identity. 
-    
+      If this token is comprimised, anyone with access to this token has control of the identity.
     properties:
-      identity_token: 
-        type: commons.JWT 
+      identity_token:
+        type: commons.JWT
         docs: Timestamp (in milliseconds) at which the token expires.
-      identity_token_expire_ts: 
-        type: commons.Timestamp
+      identity_token_expire_ts:
+        type: datetime
         docs: Information about the identity that was just authenticated.
-      identity: 
+      identity:
         type: IdentityProfile
         docs: The UUID of the game this identity belongs to.
       game_id: uuid

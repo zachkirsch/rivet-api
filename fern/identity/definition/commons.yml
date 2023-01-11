@@ -5,14 +5,24 @@ types:
     type: string 
     docs: Documentation at https://jwt.io/
   
-  Timestamp: datetime 
-  
-  WatchResponse:
-    properties:
-      index: string
+  WatchQuery: 
+    type: string
+    docs: A query parameter denoting the requests watch index.
 
-  AccountNumber:
-    type: integer
+  WatchResponse:
+    docs: Provided by watchable endpoints used in blocking loops.
+    properties:
+      index: 
+        type: string
+        docs: | 
+          Index indicating the version of the data responded.
+          Pass this to `rivet.common#WatchQuery` to block and wait for the next response.
+
+  Identifier: string
+
+  DisplayName: string
+
+  AccountNumber: integer
 
   ErrorMetadata:
     docs: Unstructured metadata relating to an error. Must be manually parsed.
