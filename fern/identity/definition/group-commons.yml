@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+types:
+  GroupSummary: 
+    properties:
+      group_id: uuid 
+      dispay_name: commons.DisplayName
+      avatar_url:
+        type: optional<string>
+        docs: The URL of this group's avatar image.
+      external: GroupExternalLinks
+      is_developer: 
+        type: boolean 
+        docs: Whether or not this group is a developer.
+      bio: commons.Bio 
+      is_currently_identity_member:
+        docs: Whether or not the current identity is a member of this group.
+        type: boolean 
+      publicity: GroupPublicity
+      member_count: integer 
+
+  GroupPublicity: 
+    docs: The current publicity value for the given group.
+    enum: 
+      - value: open 
+        name: OPEN 
+      - value: closed 
+        name: CLOSED 
+
+  GroupHandle:
+    docs: A group handle.
+    properties:
+      group_id: uuid
+      display_name: commons.DisplayName
+      avatar_url:
+        docs: The URL of this group's avatar image
+        type: string
+      external: GroupExternalLinks
+      is_developer:
+        docs: Whether or not this group is a developer group.
+        type: optional<boolean>
+
+  GroupExternalLinks:
+    docs: External links for this group.
+    properties:
+      profile: 
+        type: string
+        docs: A link to this group's profile page.
+      chat: 
+        type: string
+        docs: A link to this group's chat page.    

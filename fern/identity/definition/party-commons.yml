@@ -3,6 +3,7 @@
 imports:
   commons: commons.yml
   game-c: game-commons.yml
+  identity-c: identity-commons.yml
 
 types: 
   PartyHandle:
@@ -41,3 +42,28 @@ types:
     docs: A party lobby.
     properties:
       lobby_id: uuid
+
+  PartyMemberSummaries:
+    type: list<PartyMemberSummary>
+    docs: A list of party members.
+
+  PartyMemberSummary:
+    properties:
+      identity: identity-c.IdentityHandle
+      is_leader:
+        type: boolean
+        docs: Whether or not this party member is the leader of the given party.
+      join_ts: datetime
+      state: PartyMemberState
+  
+  PartyMemberState: 
+    union:
+      idle: {} # A party member state denoting that the member is idle. 
+      matchmaker_pending: {} # A party member state denoting that the member is currently waiting to start matchmaking. 
+      matchmaker_finding_lobby: {} # A party member state denoting that the member is currently searching for a lobby.
+      matchmaker_lobby: PartyMemberStateMatchmakerLobby
+      
+  PartyMemberStateMatchmakerLobby: 
+    docs: A party member state denoting that the member is in a lobby.
+    properties:
+      player_id: uuid

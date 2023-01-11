@@ -2,6 +2,7 @@
 
 imports:
   commons: commons.yml
+  group-c: group-commons.yml
 
 types:
   GameHandle:
@@ -15,3 +16,17 @@ types:
       banner_url:
         type: optional<string>
         docs: The URL of this game's banner image.
+    
+  GameSummary: 
+    properties:
+      game_id: uuid 
+      name_id: commons.Identifier
+      display_name: commons.DisplayName
+      logo_url: 
+        docs: The URL of this game's logo image.
+        type: optional<string>
+      banner_url: 
+        docs: The URL of this game's banner image.
+        type: optional<string>
+      url: string 
+      developer: group-c.GroupHandle
