@@ -54,7 +54,68 @@ services:
               watch_index: commons.WatchQuery
           response: GetIdentitySelfProfileOutput
 
+        getIdentityHandles: 
+          method: GET 
+          path: /batch/handle 
+          request: 
+            name: GetIdentityHandlesInput
+            query-parameters:
+              identity_ids: 
+                type: uuid
+                allow-multiple: true
+          response: GetIdentityHandlesOutput
+        
+        getIdentitySummaries:
+          docs: Fetches a list of identity summaries.
+          method: GET 
+          path: /batch/summary 
+          request: 
+            name: GetIdentitySummariesInput
+            query-parameters:
+              identity_ids: 
+                type: uuid
+                allow-multiple: true
+          response: GetIdentitySummariesOutput
+        
+        updateIdentityProfile: 
+          docs: Updates profile of the current identity.
+          method: POST 
+          path: /self/profile
+          request: 
+            name: UpdateIdentityProfileInput
+            body: 
+              properties:
+                display_name: commons.DisplayName
+                account_number: commons.AccountNumber
+                bio: commons.Bio
+          
+        validateIdentityProfile: 
+          docs: Validate contents of identity profile.
+            Use to provide immediate feedback on profile changes before committing them.
+          method: POST 
+          path: /self/profile/validate
+          request:
+            name: ValidateIdentityProfileInput
+            body: 
+              properties:
+                display_name: commons.DisplayName
+                account_number: commons.AccountNumber
+                bio: commons.Bio
+          response: ValidateIdentityProfileOutput
+
 types:
+  ValidateIdentityProfileOutput: 
+    properties:
+      errors: commons.ValidationErrors
+
+  GetIdentitySummariesOutput: 
+    properties:
+      identities: list<IdentitySummary>
+
+  GetIdentityHandlesOutput: 
+    properties:
+      identities: list<identity-c.IdentityHandle>
+      
   GetIdentitySelfProfileOutput: 
     properties:
       identity: IdentityProfile
@@ -124,7 +185,7 @@ types:
         docs: Whether or not this identity is both followng and is followed by the
           requestee's identity.
       join_ts: datetime
-      bio: Bio
+      bio: commons.Bio
       linked_accounts: list<IdentityLinkedAccount>
       groups: list<IdentityGroup>
       games: list<game.GameStatSummary>    
@@ -138,10 +199,6 @@ types:
         name: PENDING 
       - value: accepted
         name: ACCEPTED
-
-  Bio:
-    type: string
-    docs: Follows regex ^(?:[^\n\r]+\n?|\n){1,5}$
 
   IdentityLinkedAccount:
     docs: A union representing an identity's linked accounts.

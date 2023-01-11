@@ -1,6 +1,10 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 types:
+  Bio:
+    type: string
+    docs: Follows regex ^(?:[^\n\r]+\n?|\n){1,5}$
+
   JWT:
     type: string 
     docs: Documentation at https://jwt.io/
@@ -51,6 +55,15 @@ types:
 
   InternalErrorResponseContent:
     extends: BaseError
+
+  ValidationErrors: 
+    docs: An error given by failed content validation.
+    properties:
+      path: ValidationErrorPath
+
+  ValidationErrorPath: 
+    docs: A list of strings denoting the origin of a validation error.
+    type: string 
 
 errors:
   BadRequestError:
