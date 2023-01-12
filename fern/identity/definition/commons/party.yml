@@ -2,8 +2,8 @@
 
 imports:
   commons: commons.yml
-  game-c: game-commons.yml
-  identity-c: identity-commons.yml
+  gameCommons: game.yml
+  identityCommons: identity.yml
 
 types: 
   PartyHandle:
@@ -23,13 +23,13 @@ types:
   PartyActivityMatchmakerFindingLobby:
     docs: A party activity denoting that the party is currently searching for a lobby.
     properties:
-      game: game-c.GameHandle
+      game: commons.GameHandle
 
   PartyActivityMatchmakerLobby:
     docs: A party activity denoting that the party is currently in a lobby.
     properties:
       lobby: PartyMatchmakerLobby
-      game: game-c.GameHandle
+      game: commons.GameHandle
   
   PartyExternalLinks:
     docs: External links for a party.
@@ -49,7 +49,7 @@ types:
 
   PartyMemberSummary:
     properties:
-      identity: identity-c.IdentityHandle
+      identity: commons.IdentityHandle
       is_leader:
         type: boolean
         docs: Whether or not this party member is the leader of the given party.

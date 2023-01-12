@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+  gameCommons: game.yml
+  partyCommons: party.yml
+
+types:
+  IdentityGameActivity:
+    docs: The game an identity is currently participating in.
+    properties:
+      game: commons.GameHandle
+      message:
+        type: string
+        docs: A short activity message about the current game activity.
+      public_metadata:
+        type: unknown
+        docs: JSON data seen by anyone.
+      mutual_metadata:
+        type: unknown
+        docs: JSON data seen only by the given identity and their mutual followers.
+
+  UpdateIdentityGameActivity:
+    docs:
+      Information about the identity's current game. This is information that all
+      other identities can see about what the current identity is doing.
+    properties:
+      message:
+        type: optional<string>
+        docs: A short message about the current game activity.
+      public_metadata:
+        type: unknown
+        docs: JSON data seen by anyone.
+      mutual_metadata:
+        type: unknown
+        docs: JSON data seen only by the given identity and their mutual followers.
+
+  IdentityExternalLinks:
+    docs: External links for an identity.
+    properties:
+      profile:
+        type: string
+        docs: A link to this identity's profile page.
+      settings:
+        type: optional<string>
+        docs: A link to the Rivet settings page.
+      chat:
+        type: optional<string>
+        docs: A link to a chat page with the given identity.

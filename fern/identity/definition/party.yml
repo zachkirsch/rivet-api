@@ -1,15 +1,15 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
-  party-c: party-commons.yml
+  partyCommons: commons/party.yml
 
 types:
   PartySummary:
     properties:
       party_id: uuid
       create_ts: datetime
-      activity: party-c.PartyActivity
-      external: party-c.PartyExternalLinks
+      activity: partyCommons.PartyActivity
+      external: partyCommons.PartyExternalLinks
       publicity: PartyPublicity
       party_size: integer
       thread_id: uuid

@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
-  commons: commons.yml
+  commons: commons/commons.yml
   game: game.yml
   party: party.yml
   upload: upload.yml
-  identity-c: identity-commons.yml
-  group-c: group-commons.yml
+  identityCommons: commons/identity.yml
+  groupCommons: commons/group.yml
 
 services:
   http:
@@ -33,7 +33,7 @@ services:
           method: GET
           path: /{identity_id}/profile
           path-parameters:
-            identity_id: uuid 
+            identity_id: uuid
           request:
             name: GetIdentityProfileInput
             query-parameters:
@@ -47,58 +47,58 @@ services:
             - commons.RateLimitError
             - commons.InternalError
 
-        getIdentitySelfProfile: 
-          method: GET 
-          path: /self/profile 
-          request: 
+        getIdentitySelfProfile:
+          method: GET
+          path: /self/profile
+          request:
             name: GetIdentitySelfProfileInput
             query-parameters:
               watch_index: commons.WatchQuery
           response: GetIdentitySelfProfileOutput
 
-        getIdentityHandles: 
-          method: GET 
-          path: /batch/handle 
-          request: 
+        getIdentityHandles:
+          method: GET
+          path: /batch/handle
+          request:
             name: GetIdentityHandlesInput
             query-parameters:
-              identity_ids: 
+              identity_ids:
                 type: uuid
                 allow-multiple: true
           response: GetIdentityHandlesOutput
-        
+
         getIdentitySummaries:
           docs: Fetches a list of identity summaries.
-          method: GET 
-          path: /batch/summary 
-          request: 
+          method: GET
+          path: /batch/summary
+          request:
             name: GetIdentitySummariesInput
             query-parameters:
-              identity_ids: 
+              identity_ids:
                 type: uuid
                 allow-multiple: true
           response: GetIdentitySummariesOutput
-        
-        updateIdentityProfile: 
+
+        updateIdentityProfile:
           docs: Updates profile of the current identity.
-          method: POST 
+          method: POST
           path: /self/profile
-          request: 
+          request:
             name: UpdateIdentityProfileInput
-            body: 
+            body:
               properties:
                 display_name: commons.DisplayName
                 account_number: commons.AccountNumber
                 bio: commons.Bio
-          
-        validateIdentityProfile: 
+
+        validateIdentityProfile:
           docs: Validate contents of identity profile.
             Use to provide immediate feedback on profile changes before committing them.
-          method: POST 
+          method: POST
           path: /self/profile/validate
           request:
             name: ValidateIdentityProfileInput
-            body: 
+            body:
               properties:
                 display_name: commons.DisplayName
                 account_number: commons.AccountNumber
@@ -107,106 +107,106 @@ services:
 
         searchIdentities:
           docs: Fuzzy search for identities.
-          method: GET  
-          path: /search 
-          request: 
+          method: GET
+          path: /search
+          request:
             # docs: The query to match identity display names and account numbers against.
             name: SearchIdentitiesInput
             query-parameters:
-              query: string 
-              anchor: 
+              query: string
+              anchor:
                 type: optional<string>
                 docs: How many identities to offset the search by.
-              limit: 
+              limit:
                 type: optional<integer>
-                docs: Amount of identities to return. 
+                docs: Amount of identities to return.
           response: SearchIdentitiesOutput
 
-        setIdentityGameActivity: 
+        setIdentityGameActivity:
           docs: Sets the current identity's game activity.
             This activity will automatically be removed when the identity goes offline.
-          method: POST 
+          method: POST
           path: /self/activity
-          request: 
+          request:
             name: SetIdentityGameActivityInput
-            body: 
+            body:
               properties:
-                game_activity: identity-c.UpdateIdentityGameActivity
+                game_activity: identityCommons.UpdateIdentityGameActivity
 
         removeIdentityGameActivity:
           docs: Removes the current identity's game activity.
-          method: DELETE 
+          method: DELETE
           path: /self/activity
-        
+
         updateIdentityStatus:
           docs: Updates the current identity's status.
           method: POST
           path: /self/status
-          request: 
+          request:
             name: UpdateIdentityStatusInput
-            body: 
+            body:
               properties:
-                status: identity-c.IdentityStatus
+                status: commons.IdentityStatus
 
-        followIdentity: 
+        followIdentity:
           docs: Follows the given identity.
-            In order for identities to be "friends", the other identity has to also follow this identity. 
-          method: POST 
+            In order for identities to be "friends", the other identity has to also follow this identity.
+          method: POST
           path: /{identity_id}/follow
           path-parameters:
             identity_id: uuid
-        
+
         unfollowIdentity:
           docs: Unfollows the given identity.
-          method: DELETE 
+          method: DELETE
           path: /{identity_id}/follow
           path-parameters:
             identity_id: uuid
-        
+
         prepareIdentityAvatarUpload:
           docs: Prepares an avatar image upload.
             Complete upload with `rivet.api.identity#CompleteIdentityAvatarUpload`.
-          method: POST 
+          method: POST
           path: /avatar-upload/prepare
           request: PrepareIdentityAvatarUploadInput
           response: PrepareIdentityAvatarUploadOutput
 
-        completeIdentityAvatarUpload: 
+        completeIdentityAvatarUpload:
           docs: Completes an avatar image upload. Must be called after the file upload process completes.
-          method: POST 
+          method: POST
           path: /avatar-upload/{upload_id}/complete
           path-parameters:
-            upload_id: uuid 
-        
+            upload_id: uuid
+
         signupForBeta:
           docs: Submits a beta signup form.
-          method: POST 
+          method: POST
           path: /self/beta-signup
-          request: 
+          request:
             name: SignupForBetaInput
-            body: 
+            body:
               properties:
                 name: string
                 company_name: string
-                preferred_tools: string 
+                preferred_tools: string
                 goals: string
 
         reportIdentity:
           docs: Creates an abuse report for an identity.
-          method: POST 
+          method: POST
           path: /{identity_id}/report
           path-parameters:
-            identity_id: uuid 
-          request: 
+            identity_id: uuid
+          request:
             name: ReportIdentityInput
             body: optional<string>
 
         listFollowers:
-          method: GET 
+          method: GET
           path: /{identity_id}/followers
           path-parameters:
             identity_id: uuid
-          request: 
+          request:
             name: ListFollowersInput
             query-parameters:
               anchor: optional<string>
@@ -214,21 +214,21 @@ services:
           response: ListFollowersOutput
 
         listFollowing:
-          method: GET 
+          method: GET
           path: /{identity_id}/following
           path-parameters:
             identity_id: uuid
-          request: 
+          request:
             name: ListFollowingInput
             query-parameters:
               anchor: optional<string>
               limit: optional<integer>
           response: ListFollowingOutput
 
-        listFriends: 
-          method: GET 
+        listFriends:
+          method: GET
           path: /self/friends
-          request: 
+          request:
             name: ListFriendsInput
             query-parameters:
               anchor: optional<string>
@@ -236,103 +236,104 @@ services:
           response: ListFriendsOutput
 
         listMutualFriends:
-          method: GET 
+          method: GET
           path: /{identity_id}/mutual-friends
           path-parameters:
             identity_id: uuid
-          request: 
+          request:
             name: ListMutualFriendsInput
             query-parameters:
               anchor: optional<string>
               limit: optional<integer>
           response: ListMutualFriendsOutput
 
-types:  
-  ListMutualFriendsOutput: 
+types:
+  ListMutualFriendsOutput:
     properties:
-      identities: list<identity-c.IdentityHandle>
+      identities: list<commons.IdentityHandle>
       anchor: optional<string>
 
-  ListFriendsOutput: 
+  ListFriendsOutput:
     properties:
-      identities: list<identity-c.IdentityHandle>
+      identities: list<commons.IdentityHandle>
       anchor: optional<string>
 
-  ListFollowingOutput: 
+  ListFollowingOutput:
     properties:
-      identities: list<identity-c.IdentityHandle>
+      identities: list<commons.IdentityHandle>
       anchor: optional<string>
 
-  ListFollowersOutput: 
+  ListFollowersOutput:
     properties:
-      identities: list<identity-c.IdentityHandle>
+      identities: list<commons.IdentityHandle>
       anchor: optional<string>
 
   PrepareIdentityAvatarUploadOutput:
     properties:
-      upload_id: uuid 
+      upload_id: uuid
       presigned_request: upload.UploadPresignedRequest
 
-  PrepareIdentityAvatarUploadInput: 
+  PrepareIdentityAvatarUploadInput:
     docs: The path/filename of the identity avatar.
     properties:
-      path: string 
-      mime: 
+      path: string
+      mime:
         type: optional<string>
         docs: The MIME type of the identity avatar. https://www.iana.org/assignments/media-types/media-types.xhtml
-      content_length: long      
+      content_length: long
 
-  SearchIdentitiesOutput: 
+  SearchIdentitiesOutput:
     properties:
-      identities: list<identity-c.IdentityHandle>
-      anchor: 
+      identities: list<commons.IdentityHandle>
+      anchor:
         type: optional<string>
         docs: The pagination anchor.
-  ValidateIdentityProfileOutput: 
+  ValidateIdentityProfileOutput:
     properties:
       errors: commons.ValidationErrors
 
-  GetIdentitySummariesOutput: 
+  GetIdentitySummariesOutput:
     properties:
       identities: list<IdentitySummary>
 
-  GetIdentityHandlesOutput: 
+  GetIdentityHandlesOutput:
     properties:
-      identities: list<identity-c.IdentityHandle>
-      
-  GetIdentitySelfProfileOutput: 
+      identities: list<commons.IdentityHandle>
+
+  GetIdentitySelfProfileOutput:
     properties:
       identity: IdentityProfile
-      watch: commons.WatchResponse       
-  
+      watch: commons.WatchResponse
+
   GetIdentityProfileOutput:
     properties:
       identity: IdentityProfile
       watch: commons.WatchResponse
 
-  IdentitySummary: 
+  IdentitySummary:
     properties:
       identity_id: uuid
       display_name: commons.DisplayName
       account_number: commons.AccountNumber
       avatar_url: string
-      presence: 
-        type: optional<identity-c.IdentityPresence>
+      presence:
+        type: optional<commons.IdentityPresence>
         docs: Information about the identity's current status, party, and active game.
       party: optional<party.PartySummary>
-      is_registered: 
+      is_registered:
         type: boolean
         docs: Whether or not this identity is registered with a linked account.
-      external: identity-c.IdentityExternalLinks
+      external: identityCommons.IdentityExternalLinks
       following:
         type: boolean
         docs: Whether or not the requestee's identity is following this identity.
       is_following_me:
         type: boolean
         docs: Whether or not this identity following the requestee's identity.
-      is_mutual_following: 
+      is_mutual_following:
         type: boolean
-        docs: Whether or not this identity is both followng and is followed by the
+        docs:
+          Whether or not this identity is both followng and is followed by the
           requestee's identity.
 
   IdentityProfile:
@@ -341,18 +342,18 @@ types:
       display_name: commons.DisplayName
       account_number: commons.AccountNumber
       avatar_url: string
-      presence: 
-        type: optional<identity-c.IdentityPresence>
+      presence:
+        type: optional<commons.IdentityPresence>
         docs: Information about the identity's current status, party, and active game.
       party: optional<party.PartySummary>
-      is_registered: 
+      is_registered:
         type: boolean
         docs: Whether or not this identity is registered with a linked account.
-      external: identity-c.IdentityExternalLinks
-      is_admin: 
+      external: identityCommons.IdentityExternalLinks
+      is_admin:
         type: boolean
         docs: Whether or not this identity is an admin.
-      is_game_linked: 
+      is_game_linked:
         type: optional<boolean>
         docs: Whether or not this game user has been linked through the Rivet dashboard.
       dev_state: optional<IdentityDevState>
@@ -364,9 +365,10 @@ types:
       is_following_me:
         type: boolean
         docs: Whether or not this identity following the requestee's identity.
-      is_mutual_following: 
+      is_mutual_following:
         type: boolean
-        docs: Whether or not this identity is both followng and is followed by the
+        docs:
+          Whether or not this identity is both followng and is followed by the
           requestee's identity.
       join_ts: datetime
       bio: commons.Bio
@@ -376,11 +378,11 @@ types:
 
   IdentityDevState:
     docs: The state of the given identity's developer status.
-    enum: 
-      - value: inactive  
-        name: INACTIVE 
-      - value: pending  
-        name: PENDING 
+    enum:
+      - value: inactive
+        name: INACTIVE
+      - value: pending
+        name: PENDING
       - value: accepted
         name: ACCEPTED
 
@@ -399,7 +401,7 @@ types:
   IdentityGroup:
     docs: A group that the given identity.
     properties:
-      group: group-c.GroupHandle
+      group: groupCommons.GroupHandle
 
   SetupIdentityOutput:
     docs: |
@@ -427,9 +429,9 @@ types:
         docs: The UUID of the game this identity belongs to.
       game_id: uuid
 
-  GameLinkStatus: 
+  GameLinkStatus:
     docs: The link status between an identity and a game user.
-    enum: 
+    enum:
       - value: incomplete
         name: INCOMPLETE
       - value: complete

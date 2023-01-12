@@ -1,33 +1,33 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
-  commons: commons.yml
-  game-c: game-commons.yml
+  commons: commons/commons.yml
+  gameCommons: commons/game.yml
 
 types:
   GameStatSummary:
     docs: A game statistic summary.
     properties:
-      game: game-c.GameHandle
+      game: commons.GameHandle
       stats: GameStats
-  
+
   GameStats: list<GameStat>
 
-  GameStat: 
+  GameStat:
     properties:
       config: GameStatConfig
-      overall_value: 
+      overall_value:
         type: double
         docs: A single overall value of the given statistic.
-    
+
   GameStatConfig:
-    docs: A game statistic config. 
+    docs: A game statistic config.
     properties:
-      record_id: uuid  
-      icon_id: uuid 
+      record_id: uuid
+      icon_id: uuid
       format: GameStatFormatMethod
-      aggregation: GameStatAggregationMethod 
-  
-  GameStatFormatMethod: string 
+      aggregation: GameStatAggregationMethod
+
+  GameStatFormatMethod: string
 
   GameStatAggregationMethod: string
