@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: ../commons/commons.yml
+  localCommons: commons.yml
+
+services:
+  http:
+    EventsService:
+      auth: true
+      base-path: /events
+      endpoints:
+        watch:
+          docs: Returns all events relative to the current identity.
+          path: /live
+          method: GET
+          request:
+            name: WatchEventsInput
+            query-parameters:
+              watch_index: optional<commons.WatchQuery>
+          response: WatchEventsOutput
+
+types:
+  WatchEventsOutput:
+    properties:
+      events: list<localCommons.GlobalEvent>
+      watch: commons.WatchResponse

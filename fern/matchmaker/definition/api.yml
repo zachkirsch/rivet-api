@@ -1,8 +1,0 @@
-name: matchmaker
-display-name: Rivet Matchmaker API
-auth: bearer
-error-discrimination:
-  strategy: status-code
-environments:
-  Production: https://matchmaker.api.rivet.gg
-default-environment: Production

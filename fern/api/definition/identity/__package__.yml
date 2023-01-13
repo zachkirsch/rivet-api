@@ -1,0 +1,340 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:  
+  localCommons: commons.yml
+  commons: ../commons/commons.yml
+  identityCommons: ../commons/identity.yml
+  gameCommons: ../commons/game.yml
+  uploadCommons: ../commons/upload.yml
+
+services:
+  http:
+    IdentityService:
+      auth: true
+      base-path: /identities
+      endpoints:
+
+        setup: 
+          docs: 
+            Gets or creates an identity.
+
+            Passing an existing identity token in the body refreshes the token.
+
+            Temporary Accounts
+
+            Until the identity is linked with the Rivet Hub (see `PrepareGameLink`), 
+            this identity will be temporary but still behave like all other identities.
+
+            This is intended to allow users to play the game without signing up while 
+            still having the benefits of having an account. When they are ready to save their account, 
+            they should be instructed to link their account (see `PrepareGameLink`).
+
+            Storing Token
+
+            `identity_token` should be stored in some form of persistent storage. 
+            The token should be read from storage and passed to `SetupIdentity` every time 
+            the client starts.
+          path: ""
+          method: POST
+          request: 
+            name: SetupIdentityInput
+            query-parameters:
+              identity_link_token: commons.JWT
+              watch_index: optional<commons.WatchQuery>
+          response: SetupIdentityOutput
+
+        getProfile: 
+          docs: Fetches an identity profile.
+          path: /{identity_id}/profile
+          method: GET
+          path-parameters: 
+            identity_id: uuid
+          request: 
+            name: GetIdentityProfileInput
+            query-parameters: 
+              watch_index: optional<commons.WatchQuery>
+          response: GetIdentityProfileOutput
+        
+        getSelfProfile: 
+          docs: Fetches the current identity's profile.
+          path: /self/profile
+          method: GET
+          request: 
+            name: GetIdentitySelfProfileInput
+            query-parameters: 
+              watch_index: optional<commons.WatchQuery>
+          response: GetIdentityProfileOutput
+        
+        getIdentityHandles: 
+          docs: Fetches a list of identity handles.
+          path: /batch/handle
+          method: GET
+          request: 
+            name: GetIdentityHandlesInput
+            query-parameters: 
+              # TODO: how is this list serialized over the wire
+              # With allow-mulitple, Fern assumes that lists are sent over the wire as 
+              # param=a&param=b&param=c. 
+              identity_ids: 
+                type: string
+                allow-multiple: true
+          response: GetIdentityHandlesOutput
+        
+        getIdentitySummaries: 
+          docs: Fetches a list of identity summaries.
+          path: /batch/summary
+          method: GET
+          request: 
+            name: GetIdentitySummariesInput
+            query-parameters: 
+              identity_ids: 
+                type: string
+                allow-multiple: true
+          response: GetIdentitySummariesOutput
+          
+        updateIdentityProfile: 
+          docs: Updates profile of the current identity.
+          path: /self/profile
+          method: POST
+          request: 
+            name: UpdateIdentityProfileInput
+            body: 
+              properties: 
+                display_name: optional<commons.DisplayName>
+                account_number: optional<commons.AccountNumber>
+                bio: optional<commons.Bio>
+        
+        validateIdentityProfile: 
+          docs: 
+            Validate contents of identity profile.
+            Use to provide immediate feedback on profile changes before committing them.
+          path: self/profile/validate
+          method: POST
+          request: 
+            name: ValidateIdentityProfileInput
+            body: 
+              properties: 
+                display_name: optional<commons.DisplayName>
+                account_number: optional<commons.AccountNumber>
+                bio: optional<commons.Bio>
+
+        search: 
+          docs: Fuzzy search for identities.
+          path: /search
+          method: GET
+          request: 
+            name: SearchIdentitiesInput
+            query-parameters: 
+              query:
+                type: string
+                docs: The query to match identity display names and account numbers against.
+              anchor: 
+                type: optional<string>
+                docs: How many identities to offset the search by.
+              limit: 
+                type: optional<integer>
+                docs: Amount of identities to return. Must be between 1 and 32 inclusive.
+          response: SearchIdentitiesOutput
+        
+        setGameActivity: 
+          docs:
+            Sets the current identity's game activity.
+            This activity will automatically be removed when the identity goes offline.
+          path: /self/activity
+          method: POST
+          request: 
+            name: SetIdentityGameActivityInput
+            body: 
+              properties: 
+                game_activity: localCommons.UpdateIdentityGameActivity
+        
+        removeGameActivity: 
+          docs: Removes the current identity's game activity.
+          path: /self/activity
+          method: DELETE
+        
+        updateIdentityStatus: 
+          docs: Updates the current identity's status.
+          path: /identities/self/status
+          method: POST
+          request: 
+            name: UpdateIentityStatusInput
+            body: 
+              properties: 
+                status: identityCommons.IdentityStatus
+          
+        follow: 
+          docs: 
+            Follows the given identity.
+            In order for identities to be "friends", the other identity has to also follow
+            this identity.
+          path: /{identity_id}/follow
+          method: POST
+          path-parameters: 
+            identity_id: uuid
+        
+        unfollow: 
+          docs: Unfollows the given identity.
+          path: /{identity_id}/follow
+          method: DELETE
+          path-parameters: 
+            identity_id: uuid
+        
+        prepareIdentityAvatarUpload: 
+          docs: 
+            Prepares an avatar image upload.
+            Complete upload with `CompleteIdentityAvatarUpload`.
+          path: /avatar-upload/prepare
+          method: POST
+          request: 
+            name: PrepareIdentityAvatarUploadInput
+            body: 
+              properties: 
+                path: string
+                mime: 
+                  type: string
+                  docs: See https://www.iana.org/assignments/media-types/media-types.xhtml
+                content_length: long
+          response: PrepareIdentityAvatarUploadOutput
+
+        completeIdentityAvatarUpload: 
+          docs: Completes an avatar image upload. Must be called after the file upload process completes.
+          path: /avatar-upload/{upload_id}/complete
+          method: POST
+          path-parameters:
+            upload_id: uuid
+        
+        signupForBeta: 
+          docs: Submits a beta signup form.
+          path: /self/beta-signup
+          method: POST
+          request: 
+            name: SignupForBetaInput
+            body: 
+              properties: 
+                name: string
+                company_name: optional<string>
+                company_size: string
+                preferred_tools: string
+                goals: string
+        
+        report: 
+          docs: Creates an abuse report for an identity.
+          path: /{identity_id}/report
+          method: POST
+          path-parameters:
+            identity_id: uuid
+          request: 
+            name: ReportIdentityInput
+            body: 
+              properties: 
+                reason: string
+          
+        listFollowers: 
+          path: /{identity_id}/followers
+          method: GET
+          path-parameters:
+            identity_id: uuid
+          request: 
+            name: ListFollowersInput
+            query-parameters:
+              anchor: optional<string>
+              limit:
+                type: optional<string> 
+                docs: Range is between 1 and 32 (inclusive).
+          response: ListFollowersOutput
+
+        listFriends: 
+          path: /self/friends
+          method: GET
+          request:
+            name: ListFriendsInput
+            query-parameters:
+              anchor: optional<string>
+              limit:
+                type: optional<string> 
+                docs: Range is between 1 and 32 (inclusive).
+          response: ListFriendsOutput
+        
+        listMutualFriends: 
+          path: /{identity_id}/mutual-friends
+          method: GET
+          path-parameters:
+            identity_id: uuid
+          request: 
+            name: ListMutualFriendsInput
+            query-parameters:
+              anchor: optional<string>
+              limit:
+                type: optional<string> 
+                docs: Range is between 1 and 32 (inclusive).
+          response: ListMutualFriendsOutput
+
+types:
+  
+  SetupIdentityOutput:
+    properties:
+      identity_token: 
+        type: commons.JWT
+        docs: |
+          Token used to authenticate the identity. 
+          Should be stored somewhere permanent. 
+          Pass this to `rivet.api.identity#SetupIdentity$existing_identity_token` next time `rivet.api.identity#SetupIdentity` is called. 
+          Token has a 90 day TTL. 
+          This means that if `rivet.api.identity#SetupIdentity` is not called again within 90 days, the token will no longer be valid. 
+          If this happens, the user can recover their account through the linking process (see `rivet.api.identity#PrepareGameLink`). 
+          This token should be stored locally and never sent to a server or another device. 
+          If this token is comprimised, anyone with access to this token has control of the identity.
+      identity_token_expire_ts: 
+        type: commons.Timestamp
+        docs: |
+          Timestamp (in milliseconds) at which the token expires.
+      identity: 
+        type: identityCommons.IdentityProfile
+        docs: |
+          Information about the identity that was just authenticated.
+      game_id: uuid
+
+  GetIdentityProfileOutput:
+    properties:
+      identity: identityCommons.IdentityProfile
+      watch: commons.WatchResponse
+
+  GetIdentityHandlesOutput: 
+    properties: 
+      identities: list<identityCommons.IdentityHandle>
+  
+  GetIdentitySummariesOutput: 
+    properties: 
+      identities: list<identityCommons.IdentitySummary>
+  
+  ValidateIdentityProfileOutput: 
+    properties: 
+      errors: list<commons.ValidationError>
+  
+  SearchIdentitiesOutput:
+    properties:
+      identities: list<identityCommons.IdentityHandle>
+      anchor: 
+        type: string
+        docs: |
+          The pagination anchor.
+  
+  PrepareIdentityAvatarUploadOutput: 
+    properties: 
+      upload_id: uuid
+      presigned_request: uploadCommons.UploadPresignedRequest
+  
+  ListFollowersOutput: 
+    properties: 
+      identities: list<identityCommons.IdentityHandle>
+  
+  ListFriendsOutput: 
+    properties: 
+      identities: list<identityCommons.IdentityHandle>
+      anchor: optional<string>
+  
+  ListMutualFriendsOutput: 
+    properties: 
+      identities: list<identityCommons.IdentityHandle>
+      anchor: optional<string>

@@ -1,0 +1,58 @@
+imports: 
+  commons: commons.yml
+  
+types: 
+
+  MatchmakerLobbyJoinInfo: 
+    docs: A matchmaker lobby.
+    properties: 
+      lobby_id: uuid
+      region: MatchmakerLobbyJoinInfoRegion
+      ports: map<string, MatchmakerLobbyJoinInfoPort>
+      player: MatchmakerLobbyJoinInfoPlayer
+  
+  MatchmakerLobbyJoinInfoRegion: 
+    docs: A matchmaker lobby region.
+    properties: 
+      region_id: commons.Identifier
+      display_name: commons.DisplayName
+  
+  MatchmakerLobbyJoinInfoPort: 
+    properties:
+      host: 
+        type: optional<string>
+        docs: > 
+          The host for the given port.
+          Will be null if using a port range.
+      hostname: string
+      port: 
+        type: optional<integer>
+        docs: > 
+          The port number for this lobby.
+          Will be null if using a port range.
+      port_range: 
+        type: MatchmakerLobbyJoinInfoPortRange
+        docs: > 
+          Whether or not this lobby port uses TLS.
+          You cannot mix a non-TLS and TLS ports.
+      is_tls: boolean
+
+  MatchmakerLobbyJoinInfoPortRange: 
+    docs: Inclusive range of ports that can be connected to.
+    properties: 
+      min: 
+        type: integer
+        docs: Minimum port that can be connected to. Inclusive range.
+      max: 
+        type: integer
+        docs: Maximum port that can be connected to. Inclusive range.
+  
+  MatchmakerLobbyJoinInfoPlayer: 
+    docs: A matchmaker lobby player.
+    properties: 
+      token: 
+        docs: > 
+          Pass this token through the socket to the lobby server.
+          The lobby server will validate this token with `PlayerConnected.player_token`
+        type: commons.JWT
+    

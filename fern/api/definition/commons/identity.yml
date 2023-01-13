@@ -1,0 +1,167 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+  gameCommons: game.yml
+  partyCommons: party.yml
+  groupCommons: group.yml
+
+types:
+
+  IdentityHandle:
+    docs: An identity handle.
+    properties:
+      identity_id: uuid
+      display_name: commons.DisplayName
+      account_number: commons.AccountNumber
+      avatar_url: 
+        type: string
+        docs: The URL of this identity's avatar image.
+      presence: optional<IdentityPresence>
+      party: optional<partyCommons.PartyHandle>
+      is_registered: 
+        type: boolean
+        docs: Whether or not this identity is registered with a linked account.
+      external: IdentityExternalLinks
+  
+  IdentitySummary:
+    docs: An identity summary.
+    properties: 
+      identity_id: uuid
+      display_name: commons.DisplayName
+      account_number: commons.AccountNumber
+      avatar_url: 
+        type: string
+        docs: The URL of this identity's avatar image.
+      presence: optional<IdentityPresence>
+      party: optional<partyCommons.PartyHandle>
+      is_registered: 
+        type: boolean
+        docs: Whether or not this identity is registered with a linked account.
+      external: IdentityExternalLinks
+      following: 
+        type: boolean
+        docs: Whether or not the requestee's identity is following this identity.
+      is_following_me:
+        type: boolean
+        docs: Whether or not this identity is both followng and is followed by the requestee's identity.
+      is_mutual_following: boolean
+
+  IdentityProfile: 
+    docs: An identity profile.
+    properties: 
+      identity_id: uuid
+      display_name: commons.DisplayName
+      account_number: commons.AccountNumber
+      avatar_url: 
+        docs: The URL of this identity's avatar image.
+        type: string
+      presence: optional<IdentityPresence>
+      party: 
+        docs: Whether or not this identity is registered with a linked account.
+        type: optional<partyCommons.PartySummary>
+      is_registered: 
+        docs: Whether or not this identity is registered with a linked account.
+        type: boolean
+      external: IdentityExternalLinks
+      is_admin: 
+        docs: Whether or not this identity is an admin.
+        type: boolean
+      is_game_linked: 
+        docs: Whether or not this game user has been linked through the Rivet dashboard.
+        type: optional<boolean>
+      dev_state: optional<IdentityDevState>
+      follower_count: integer
+      following_count: integer
+      following: 
+        docs: Whether or not the requestee's identity is following this identity.
+        type: boolean
+      is_following_me: 
+        docs: Whether or not this identity is both followng and is followed by the requestee's identity.
+        type: boolean
+      is_mutual_following: boolean
+      join_ts: commons.Timestamp
+      bio: commons.Bio
+      linked_accounts: list<IdentityLinkedAccount>
+      groups: list<IdentityGroup>
+      games: list<gameCommons.GameStatSummary>
+      
+  IdentityExternalLinks:
+    docs: External links for an identity.
+    properties:
+      profile:
+        type: string
+        docs: A link to this identity's profile page.
+      settings:
+        type: optional<string>
+        docs: A link to the Rivet settings page.
+      chat:
+        type: optional<string>
+        docs: A link to a chat page with the given identity.
+
+  IdentityPresence:
+    docs: Information about the identity's current status, party, and active game.
+    properties:
+      update_ts: datetime
+      status: IdentityStatus
+      game_activity: optional<IdentityGameActivity>
+
+  IdentityStatus:
+    docs:
+      The current status of an identity. This helps players understand if another
+      player is currently playing or has their game in the background.
+    enum:
+      - name: ONLINE
+        value: online
+      - name: AWAY
+        value: away
+      - name: offline
+        value: offline
+
+  IdentityGameActivity:
+    docs: The game an identity is currently participating in.
+    properties:
+      game: gameCommons.GameHandle
+      message:
+        type: string
+        docs: A short activity message about the current game activity.
+      public_metadata:
+        type: unknown
+        docs: JSON data seen by anyone.
+      mutual_metadata:
+        type: unknown
+        docs: JSON data seen only by the given identity and their mutual followers.
+  
+  IdentityGroup: 
+    docs: A group that the given identity.
+    properties: 
+      group: groupCommons.GroupHandle
+  
+  IdentityDevState: 
+    docs: The state of the given identity's developer status.
+    enum: 
+      - name: INACTIVE
+        value: inactive
+      - name: PENDING
+        value: pending
+      - name: ACCEPTED
+        value: accepted
+  
+  IdentityLinkedAccount: 
+    docs: A union representing an identity's linked accounts.
+    union: 
+      email: IdentityEmailLinkedAccount
+  
+  IdentityEmailLinkedAccount: 
+    docs: An identity's linked email.
+    properties: 
+      email: commons.Email
+
+  GameLinkStatus: 
+    enum: 
+      - name: INCOMPLETE
+        value: incomplete
+      - name: COMPLETE
+        value: complete
+      - name: CANCELLED
+        value: cancelled

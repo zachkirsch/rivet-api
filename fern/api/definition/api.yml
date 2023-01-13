@@ -1,8 +1,8 @@
-name: identity
-display-name: Rivet Identity API
+name: rivet
+display-name: Rivet API
 auth: bearer
 error-discrimination: 
   strategy: status-code
 environments:
-  Production: https://identity.api.rivet.gg
+  Production: https://api.rivet.gg
 default-environment: Production
