@@ -1,0 +1,135 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+  groupCommons: group.yml
+
+types:
+
+  GameHandle:
+    properties:
+      game_id: uuid
+      name_id: commons.Identifier
+      display_name: commons.DisplayName
+      logo_url: string
+      banner_url: string 
+
+  GameSummary:
+    properties:
+      game_id: uuid
+      name_id: commons.Identifier
+      display_name: commons.DisplayName
+      logo_url:
+        docs: The URL of this game's logo image.
+        type: optional<string>
+      banner_url:
+        docs: The URL of this game's banner image.
+        type: optional<string>
+      url: string
+      developer: groupCommons.GroupHandle
+  
+  # GameProfile
+
+  # GamePlatformLink
+
+  GameStatSummary:
+    docs: A game statistic summary.
+    properties:
+      game: GameHandle
+      stats: list<GameStat>
+
+  GameStat:
+    docs: A game statistic.
+    properties:
+      config: GameStatConfig
+      overall_value:
+        type: double
+        docs: A single overall value of the given statistic.
+
+  # GameStat
+
+  # GameExpandedStatSummary
+
+  # GameExpandedStat
+
+  # GameRating
+
+  GameStatConfig:
+    docs: A game statistic config.
+    properties:
+      record_id: uuid
+      icon_id: uuid
+      format: GameStatFormatMethod
+      aggregation: GameStatAggregationMethod
+      sorting: GameStatSortingMethod
+      priority: integer
+      display_name: commons.DisplayName
+      postfix_singular: 
+        docs: "A string appended to the end of a singular game statistic's value. Example: 1 **dollar**."
+        type: optional<string>
+      postfix_plural: 
+        docs: "A string appended to the end of a game statistic's value that is not exactly 1. Example: 45 **dollars**."
+        type: optional<string>
+      prefix_singular: 
+        docs: "A string appended to the beginning of a singular game statistic's value. Example: **value** 1."
+        type: optional<string>
+      prefix_plural: 
+        docs: "A string prepended to the beginning of a game statistic's value that is not exactly 1. Example: **values** 45."
+        type: optional<string>
+  
+  GameStatFormatMethod: 
+    docs: A value denoting the format method of a game statistic.
+    enum: 
+      - value: integer
+        name: INTEGER
+        docs: An integer with no decimals (1,234).
+      - value: float_1
+        name: FLOAT_1
+        docs: A float with 1 decimal (1,234.5).
+      - value: float_2
+        name: FLOAT_2
+        docs: A float with 2 decimals (1,234.56).
+      - value: float_3
+        name: FLOAT_3
+        docs: A float with 3 decimals (1,234.567).
+      - value: duration_minute
+        name: DURATION_MINUTE
+        docs: A duration with minute precision (1d 2h 45m).
+      - value: duration_second
+        name: DURACTION_SECOND
+        docs: A duration with second precision (1d 2h 45m 21s).
+      - value: duration_hundredth_second
+        name: DURATION_HUNDREDTH_SECOND
+        docs: > 
+          A duration with hundredth-second precision (1d 2h 45m 21.46s).
+          It is important to notice that this custom format is not a standard way to define Enums in OpenAPI and it will be not understood by the majority of tools that parse OpenAPI files. It is important to check with the tools or libraries that you are using to make sure they support this custom format.
+  
+  GameStatAggregationMethod: 
+    docs: A value denoting the aggregation method of a game statistic.
+    enum: 
+      - value: sum
+        name: SUM
+        docs: Summation aggregation.
+      - value: average
+        name: AVERAGE
+        docs: Average aggregation.
+      - value: min
+        name: MIN
+        docs: Minimum value aggregation.
+      - value: max
+        name: MAX
+        docs: Maximum value aggregation.
+  
+  GameStatSortingMethod:
+    docs: A value denoting the sorting method of a game statistic.
+    enum: 
+      - value: desc
+        name: DESC
+        docs: Descending sorting.
+      - value: asc
+        name: ASC
+        docs: Ascending sorting.
+
+
+
+         

@@ -1,0 +1,48 @@
+imports: 
+  commons: commons.yml
+  groupCommons: group.yml
+  partyCommons: party.yml
+  identityCommons: identity.yml
+
+types:
+
+  ChatThread: 
+    docs: A chat thread
+    properties: 
+      thread_id: uuid
+      create_ts: commons.Timestamp
+      topic: ChatTopic
+      tail_message: optional<ChatMessage>
+      last_read_ts: commons.Timestamp
+      unread_count: integer
+      external: ChatThreadExternalLinks
+  
+  ChatMessage: 
+    properties: 
+      chat_message_id: uuid
+      thread_id: uuid
+      send_ts: commons.Timestamp
+  
+  ChatTopic: 
+    docs: Represents the topic of the given chat thread.
+    union: 
+      group: ChatTopicGroup
+      party: ChatTopicParty
+      direct: ChatTopicDirect
+
+  ChatTopicGroup: 
+    properties: 
+      group: groupCommons.GroupHandle
+
+  ChatTopicParty: 
+    properties: 
+      party: partyCommons.PartyHandle
+  
+  ChatTopicDirect: 
+    properties: 
+      identity_a: identityCommons.IdentityHandle
+      identity_b: identityCommons.IdentityHandle
+  
+  ChatThreadExternalLinks: 
+    properties: 
+      chat: string

@@ -2,10 +2,10 @@ groups:
   external:
     generators:
       - name: fernapi/fern-typescript-sdk
-        version: 0.0.255
+        version: 0.0.257-3-ge49c0f5
         output:
           location: npm
-          package-name: '@fern-api/rivet-matchmaker'
+          package-name: '@fern-api/rivet'
           token: ${FERN_NPM_TOKEN}
         github:
-          repository: fern-rivet/matchmaker-node
+          repository: fern-rivet/rivet-node
